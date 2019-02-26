@@ -7,7 +7,11 @@ import java.awt.image.BufferedImage;
 
 public class SpaceCanvas extends Canvas {
 	
-	BufferedImage img;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	BufferedImage background, planet;
 	int width;
 	int height;
 	
@@ -15,8 +19,9 @@ public class SpaceCanvas extends Canvas {
 		this.width = width;
 		this.height = height;
 		var r = new Res();
-		img = r.loadImage();
-		img = img.getSubimage(0, 0, width, height);
+		background = r.loadImage("/resources/background.jpg");
+		background = background.getSubimage(0, 0, width, height);
+		planet = r.loadImage("/resources/planet02.png");
 	}
 	
 	void drawGrid(Graphics g) {
@@ -33,7 +38,7 @@ public class SpaceCanvas extends Canvas {
 	
 	public void paint(Graphics g) {
 		
-		g.drawImage(img, 0, 0, width, height, null);
+		g.drawImage(background, 0, 0, width, height, null);
 		
 		this.drawGrid(g);
 		
@@ -41,7 +46,9 @@ public class SpaceCanvas extends Canvas {
 		g.drawRect(0, 0, 50, 50);
 		g.setColor(Color.gray);
 		g.fillOval(10, 10, 30, 30);
-		g.setColor(Color.gray);
-		g.fillOval(51, 1, 48, 48);
+		
+		//g.setColor(Color.gray);
+		//g.fillOval(51, 1, 48, 48);
+		g.drawImage(planet, 50, 0, 50, 50, null);
 	}
 }

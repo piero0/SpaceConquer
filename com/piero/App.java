@@ -16,22 +16,23 @@ public class App {
 		//"javax.swing.plaf.nimbus.NimbusLookAndFeel"
 		//"com.sun.java.swing.plaf.windows.WindowsClassicLookAndFeel"
 		UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
-		new Gui().drawGUI();
 		new Res().main();
+		new Gui().drawGUI();
+		
 	}
 }
 
 class Res {
 	void main() {
 		var r = getClass().getResource("resources/test01");
-		var r2 = getClass().getResource("/resources/test01");
+		var r2 = getClass().getResource("/resources/planet01.png");
 		
 		if(r != null) { System.out.println(r.getPath()); } else { System.out.println("r is null"); }
 		if(r2 != null) { System.out.println(r2.getPath()); } else { System.out.println("r2 is null"); }
 	}
-	
-	public BufferedImage loadImage() {
-		var url = getClass().getResource("/resources/background.jpg");
+	//"/resources/background.jpg"
+	public BufferedImage loadImage(String name) {
+		var url = getClass().getResource(name);
 		BufferedImage img = null;
 		try {
 			img = ImageIO.read(url);

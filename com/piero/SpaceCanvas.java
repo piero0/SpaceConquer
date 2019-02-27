@@ -8,10 +8,6 @@ import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 
 public class SpaceCanvas extends Canvas implements MouseListener {
-	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	
 	PlanetManager planetMan;
@@ -52,20 +48,12 @@ public class SpaceCanvas extends Canvas implements MouseListener {
 	}
 	
 	public void paint(Graphics g) {
-		
 		g.drawImage(background, 0, 0, width, height, null);
 		
 		this.drawGrid(g);
 		
 		g.setColor(Color.green);
 		g.drawRect(curx, cury, Res.tileSize, Res.tileSize);
-		
-		//g.setColor(Color.gray);
-		//g.fillOval(10, 10, 30, 30);
-		
-		//g.setColor(Color.gray);
-		//g.fillOval(51, 1, 48, 48);
-		//g.drawImage(planet, 50, 0, 50, 50, null);
 		
 		planetMan.drawPlanets(g);
 	}

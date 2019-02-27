@@ -3,6 +3,8 @@ package com.piero;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Random;
 
 public class PlanetManager {
@@ -12,6 +14,14 @@ public class PlanetManager {
 	PlanetManager() {
 		planets = new ArrayList<>();
 		colisions = 0;
+	}
+	
+	Integer[] shuffle(int n) {
+		Integer[] inp = new Integer[n];
+		Arrays.setAll(inp, x -> x);
+		var l = Arrays.asList(inp);
+		Collections.shuffle(l);
+		return l.toArray(inp);
 	}
 	
 	int getRand(Random rnd, int max, int[] prev, int i) {
@@ -47,36 +57,20 @@ public class PlanetManager {
 		
 		var img = Res.loadImage("/resources/planet02.png");
 		int[] xy;
-		int tileNum = 0;
-		var rnd = new Random();
-		
-		int size = 10;
+		int planetsNum = 15;
 		int maxIdx = 100;
+
+		Integer[] indxs = this.shuffle(maxIdx);
 		
-		int[] indxs = new int[size];
-		
-		colisions = 0;
-		
-		for (int i = 0; i < size; i++) {
-			tileNum = this.getRand(rnd, maxIdx, indxs, i);
-			xy = this.tileNumToXY(tileNum);
+		for (int i = 0; i < planetsNum; i++) {
+			xy = this.tileNumToXY(indxs[i]);
 			planets.add(new Planet(xy[0], xy[1], img));
 		}
 		
-		System.out.println(colisions);
 	}
 	
 	int[] tileNumToXY(int num) {
-		int[] xy = {0, 0};
-		
-		int y = num / 10;
-		int x = num % 10;
-		
-		xy[0] = x*Res.tileSize;
-		xy[1] = y*Res.tileSize;
-		
-		//System.out.println(String.valueOf(xy[0]) + "-" + String.valueOf(xy[1]));
-		
+		int[] xy = {num / 10 * Res.tileSize, num % 10 * Res.tileSize};
 		return xy;
 	}
 	
@@ -102,6 +96,6 @@ class Planet {
 	}
 	
 	void draw(Graphics g) {
-		g.drawImage(image, x, y, Res.tileSize, Res.tileSize, null);
+		g.drawImage(image, x+1, y+1, Res.tileSize, Res.tileSize, null);
 	}
 }

@@ -3,25 +3,40 @@ package com.piero;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 
-public class SpaceCanvas extends Canvas {
+public class SpaceCanvas extends Canvas implements MouseListener {
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	PlanetManager planetMan;
 	BufferedImage background, planet;
 	int width;
 	int height;
+	int curx, cury;
 	
 	SpaceCanvas(int width, int height) {
 		this.width = width;
 		this.height = height;
-		var r = new Res();
-		background = r.loadImage("/resources/background.jpg");
+		
+		background = Res.loadImage("/resources/background.jpg");
 		background = background.getSubimage(0, 0, width, height);
-		planet = r.loadImage("/resources/planet02.png");
+		planet = Res.loadImage("/resources/planet02.png");
+		planetMan = new PlanetManager();
+		
+		this.addMouseListener(this);
+		
+		curx = 0; cury = 0;
+	}
+	
+	void initPlanets() {
+		planetMan.generatePlanets();
+		this.repaint();
 	}
 	
 	void drawGrid(Graphics g) {
@@ -43,12 +58,49 @@ public class SpaceCanvas extends Canvas {
 		this.drawGrid(g);
 		
 		g.setColor(Color.green);
-		g.drawRect(0, 0, 50, 50);
-		g.setColor(Color.gray);
-		g.fillOval(10, 10, 30, 30);
+		g.drawRect(curx, cury, Res.tileSize, Res.tileSize);
+		
+		//g.setColor(Color.gray);
+		//g.fillOval(10, 10, 30, 30);
 		
 		//g.setColor(Color.gray);
 		//g.fillOval(51, 1, 48, 48);
-		g.drawImage(planet, 50, 0, 50, 50, null);
+		//g.drawImage(planet, 50, 0, 50, 50, null);
+		
+		planetMan.drawPlanets(g);
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		if(e.getButton() == MouseEvent.BUTTON1) {
+			curx = e.getX() / Res.tileSize * Res.tileSize;
+			cury = e.getY() / Res.tileSize * Res.tileSize;
+			//System.out.println(String.valueOf(curx) + ":" + String.valueOf(cury));
+			this.repaint();
+		}
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 }

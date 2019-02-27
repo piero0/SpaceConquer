@@ -139,6 +139,7 @@ public class Gui implements ActionListener {
 		if(e.getActionCommand().equals("send")) {
 			//infoBox.insert(String.valueOf(++j) + "th line of text\n", 0);
 			//infoBox.setCaretPosition(0);
+			canvas.initPlanets();
 		} else if(e.getActionCommand().equals("next")) {
 			JOptionPane.showMessageDialog(null, "Sure you are?");
 		}

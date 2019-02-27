@@ -23,6 +23,8 @@ public class App {
 }
 
 class Res {
+	static final int tileSize = 50;
+	
 	void main() {
 		var r = getClass().getResource("resources/test01");
 		var r2 = getClass().getResource("/resources/planet01.png");
@@ -31,8 +33,8 @@ class Res {
 		if(r2 != null) { System.out.println(r2.getPath()); } else { System.out.println("r2 is null"); }
 	}
 	//"/resources/background.jpg"
-	public BufferedImage loadImage(String name) {
-		var url = getClass().getResource(name);
+	static public BufferedImage loadImage(String name) {
+		var url = Res.class.getResource(name); //getClass()
 		BufferedImage img = null;
 		try {
 			img = ImageIO.read(url);

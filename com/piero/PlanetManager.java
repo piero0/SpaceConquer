@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.Random;
 
 public class PlanetManager {
@@ -24,32 +25,12 @@ public class PlanetManager {
 		return l.toArray(inp);
 	}
 	
-	int getRand(Random rnd, int max, int[] prev, int i) {
-		int next = 0;
-		int maxTries = 10;
-		int curTry = 0;
-		boolean duplicate = false;
-		
-		while(curTry < maxTries) {
-			next = rnd.nextInt(max);
-			for (int j = 0; j < i; j++) {
-				if(next == prev[j]) {
-					duplicate = true;
-					break;
-				}
-			}
-			
-			if(duplicate) {
-				colisions++;
-				curTry++;
-				duplicate = false;
-			} else {
-				prev[i] = next;
-				break;
-			}
+	Planet getPlanetFromXY(Point pp) {
+		for (var p: planets) {
+			if(p.isOn(pp.getX(), pp.getY()))
+				return p;
 		}
-		if(curTry >= maxTries) throw new RuntimeException("Random gen failure");
-		return next;
+		return null;
 	}
 	
 	void generatePlanets() {
@@ -85,14 +66,25 @@ class Planet {
 	int x, y, production, ships;
 	BufferedImage image;
 	String owner;
+	String name;
 	
 	Planet(int x, int y, BufferedImage img) {
 		this.x = x;
 		this.y = y;
 		image = img;
 		owner = "Whoever";
+		name = "AlphaBeta";
 		production = 5;
 		ships = 10;
+	}
+	
+	String getName() { return name; }
+	String getOwner() { return owner; }
+	int getProduction() { return production; }
+	int getShipsNum() { return ships; }
+	
+	boolean isOn(int x, int y) {
+		return this.x == x && this.y == y;
 	}
 	
 	void draw(Graphics g) {

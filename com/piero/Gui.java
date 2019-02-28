@@ -29,11 +29,13 @@ public class Gui implements ActionListener {
 	JFrame MainFrame;
 	SpaceCanvas canvas;
 	JScrollPane textScroll;
+	GameInfo gameInfo;
 	
 	int j;
 	
 	Gui() {
 		j = 0;
+		gameInfo = GameInfo.getInstance();
 	}
 	
 	void setupMainFrame(JComponent topBox) {
@@ -107,12 +109,14 @@ public class Gui implements ActionListener {
 		var tmpvbox = Box.createVerticalBox();
 		
 		var tmpbox1 = Box.createHorizontalBox();
-		JLabel srcstat = new JLabel("Src Name: XYZ, Production: XX, Available ships: YY, Owner: Cluthlu");
+		JLabel srcstat = new JLabel("Src None");
+		gameInfo.setSrcLabel(srcstat);
 		tmpbox1.add(srcstat);
 		tmpbox1.add(Box.createHorizontalGlue());
 		
 		var tmpbox2 = Box.createHorizontalBox();
-		JLabel dststat = new JLabel("Dst Name: XYZ, Production: XX, Available ships: YY, Owner: Cluthlu");
+		JLabel dststat = new JLabel("Dst None");
+		gameInfo.setDstLabel(dststat);
 		tmpbox2.add(dststat);
 		tmpbox2.add(Box.createHorizontalGlue());
 		

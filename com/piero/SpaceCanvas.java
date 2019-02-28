@@ -11,10 +11,11 @@ public class SpaceCanvas extends Canvas implements MouseListener {
 	private static final long serialVersionUID = 1L;
 	
 	PlanetManager planetMan;
+	GameInfo gameInfo;
+	Cursor cursor;
 	BufferedImage background, planet;
 	int width;
 	int height;
-	int curx, cury;
 	
 	SpaceCanvas(int width, int height) {
 		this.width = width;
@@ -22,12 +23,12 @@ public class SpaceCanvas extends Canvas implements MouseListener {
 		
 		background = Res.loadImage("/resources/background.jpg");
 		background = background.getSubimage(0, 0, width, height);
-		planet = Res.loadImage("/resources/planet02.png");
-		planetMan = new PlanetManager();
+		gameInfo = GameInfo.getInstance();
+		planetMan = gameInfo.getPlanetMan();
 		
 		this.addMouseListener(this);
 		
-		curx = 0; cury = 0;
+		cursor = new Cursor(gameInfo);
 	}
 	
 	void initPlanets() {
@@ -49,21 +50,16 @@ public class SpaceCanvas extends Canvas implements MouseListener {
 	
 	public void paint(Graphics g) {
 		g.drawImage(background, 0, 0, width, height, null);
+		planetMan.drawPlanets(g);
 		
 		this.drawGrid(g);
-		
-		g.setColor(Color.green);
-		g.drawRect(curx, cury, Res.tileSize, Res.tileSize);
-		
-		planetMan.drawPlanets(g);
+		cursor.drawCursor(g);
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		if(e.getButton() == MouseEvent.BUTTON1) {
-			curx = e.getX() / Res.tileSize * Res.tileSize;
-			cury = e.getY() / Res.tileSize * Res.tileSize;
-			//System.out.println(String.valueOf(curx) + ":" + String.valueOf(cury));
+			cursor.update(new Point(e.getX(), e.getY()));	
 			this.repaint();
 		}
 	}
@@ -90,5 +86,71 @@ public class SpaceCanvas extends Canvas implements MouseListener {
 	public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
+	}
+}
+
+class Point {
+	int x,y;
+	
+	Point(int x, int y) {
+		this.x = x;
+		this.y = y;
+	}
+	
+	boolean equals(Point p) {
+		return p.x == x && p.y == y;
+	}
+	
+	void set(Point p) {
+		this.x = p.x;
+		this.y = p.y;
+	}
+	
+	int getX() {return x;}
+	int getY() {return y;}
+}
+
+class Cursor {
+	boolean hasDst;
+	Point src, dst;
+	GameInfo gameInfo;
+	
+	Cursor(GameInfo gameInfo) {
+		this.gameInfo = gameInfo;
+		hasDst = false;
+		src = new Point(0, 0);
+		dst = new Point(0, 0);
+	}
+	
+	void drawCursor(Graphics g) {
+		g.setColor(Color.green);
+		g.drawRect(src.getX(), src.getY(), Res.tileSize, Res.tileSize);
+		
+		if(hasDst) {
+			g.setColor(Color.red);
+			g.drawRect(dst.getX(), dst.getY(), Res.tileSize, Res.tileSize);
+		}
+	}
+	
+	void update(Point p) {
+		var u = new Point(
+				p.getX() / Res.tileSize * Res.tileSize, 
+				p.getY() / Res.tileSize * Res.tileSize);
+		
+		var planet = gameInfo.getPlanetMan().getPlanetFromXY(u);
+		
+		if(planet != null) {
+			if(!u.equals(src)) {
+				if(!hasDst) {
+					dst.set(u);
+					hasDst = true;
+					gameInfo.setDstPlanet(planet);
+				} else {
+					hasDst = false;
+					src.set(u);
+					gameInfo.setSrcPlanet(planet);
+				}
+			}
+		}
 	}
 }

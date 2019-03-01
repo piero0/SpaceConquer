@@ -1,12 +1,11 @@
 package com.piero;
 
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Iterator;
-import java.util.Random;
 
 public class PlanetManager {
 	ArrayList<Planet> planets;
@@ -25,9 +24,9 @@ public class PlanetManager {
 		return l.toArray(inp);
 	}
 	
-	Planet getPlanetFromXY(Point pp) {
+	Planet getPlanetOnXY(Point pp) {
 		for (var p: planets) {
-			if(p.isOn(pp.getX(), pp.getY()))
+			if(p.isOn(pp))
 				return p;
 		}
 		return null;
@@ -45,7 +44,9 @@ public class PlanetManager {
 		
 		for (int i = 0; i < planetsNum; i++) {
 			xy = this.tileNumToXY(indxs[i]);
-			planets.add(new Planet(xy[0], xy[1], img));
+			var p = new Planet(xy[0], xy[1], img);
+			p.setName("AlphaBeta" + i);
+			planets.add(p);
 		}
 		
 	}
@@ -63,14 +64,15 @@ public class PlanetManager {
 }
 
 class Planet {
-	int x, y, production, ships;
-	BufferedImage image;
-	String owner;
-	String name;
+	private int production, ships;
+	private BufferedImage image;
+	private String owner;
+	private String name;
+	private Point xy;
 	
 	Planet(int x, int y, BufferedImage img) {
-		this.x = x;
-		this.y = y;
+		xy = new Point();
+		xy.setLocation(x, y);
 		image = img;
 		owner = "Whoever";
 		name = "AlphaBeta";
@@ -78,16 +80,17 @@ class Planet {
 		ships = 10;
 	}
 	
+	void setName(String name) { this.name = name; }
 	String getName() { return name; }
 	String getOwner() { return owner; }
 	int getProduction() { return production; }
 	int getShipsNum() { return ships; }
 	
-	boolean isOn(int x, int y) {
-		return this.x == x && this.y == y;
+	boolean isOn(Point p) {
+		return xy.equals(p);
 	}
 	
 	void draw(Graphics g) {
-		g.drawImage(image, x+1, y+1, Res.tileSize, Res.tileSize, null);
+		g.drawImage(image, (int)xy.getX()+1, (int)xy.getY()+1, Res.tileSize, Res.tileSize, null);
 	}
 }

@@ -1,17 +1,17 @@
 package com.piero;
 
+import java.util.HashMap;
+
 import javax.swing.JLabel;
 
 public class GameInfo {
 	private static GameInfo me;
 	private PlanetManager planetMan;
-	private Planet srcPlanet, dstPlanet;
-	private boolean hasSrcPlanet, hasDstPlanet;
-	
-	private JLabel srcInfo, dstInfo;
+	private LabelUpdater labelsMan;
 	
 	private GameInfo() {
 		planetMan = new PlanetManager();
+		labelsMan = new LabelUpdater();
 	}
 	
 	static GameInfo getInstance() {
@@ -21,46 +21,42 @@ public class GameInfo {
 		return me;
 	}
 	
-	void setSrcLabel(JLabel srcLabel) {
-		srcInfo = srcLabel;
-	}
-	
-	void setDstLabel(JLabel dstLabel) {
-		dstInfo = dstLabel;
-	}
-	
-	void setSrcPlanet(Planet p) {
-		hasSrcPlanet = true;
-		srcPlanet = p;
-		
-		if(srcInfo != null) {
-			srcInfo.setText(this.getPlanetDesc("Src"));
-		}
-	}
-	
-	void setDstPlanet(Planet p) {
-		hasDstPlanet = true;
-		srcPlanet = p;
-		
-		if(dstInfo != null) {
-			dstInfo.setText(this.getPlanetDesc("Dst"));
-		}
-	}
-	
-	String getPlanetDesc(String prefix) {
-		//"Src Name: XYZ, Production: XX, Available ships: YY, Owner: Cluthlu"
-		String txt = prefix + ": None";
-		if(hasSrcPlanet) {
-			txt = prefix + " Name: " + srcPlanet.getName()
-				+ ", Production: " + srcPlanet.getProduction()
-				+ ", Available ships: " + srcPlanet.getShipsNum()
-				+ ", Owner: " + srcPlanet.getOwner();
-			
-		}
+	String getPlanetDesc(Planet p) {
+		String txt = " None"; 
+		if(p == null) return txt;
+		txt = " Name: " + p.getName()
+			+ ", Production: " + p.getProduction()
+			+ ", Available ships: " + p.getShipsNum()
+			+ ", Owner: " + p.getOwner();
 		return txt;
+	}
+	
+	void updateInfo(String prefix, Planet p) {
+		labelsMan.update(prefix, prefix + this.getPlanetDesc(p));
 	}
 	
 	PlanetManager getPlanetMan() {
 		return planetMan;
+	}
+	
+	LabelUpdater getLabelUpdater() {
+		return labelsMan;
+	}
+}
+
+class LabelUpdater {
+	HashMap<String, JLabel> labels;
+	
+	LabelUpdater() {
+		labels = new HashMap<>();
+	}
+	
+	void register(String Name, JLabel label) {
+		labels.put(Name, label);
+	}
+	
+	void update(String name, String text) {
+		var label = labels.get(name);
+		if(label != null) label.setText(text);
 	}
 }

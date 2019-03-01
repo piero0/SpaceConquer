@@ -109,14 +109,14 @@ public class Gui implements ActionListener {
 		var tmpvbox = Box.createVerticalBox();
 		
 		var tmpbox1 = Box.createHorizontalBox();
-		JLabel srcstat = new JLabel("Src None");
-		gameInfo.setSrcLabel(srcstat);
+		JLabel srcstat = new JLabel("a");
+		gameInfo.getLabelUpdater().register("Src", srcstat);
 		tmpbox1.add(srcstat);
 		tmpbox1.add(Box.createHorizontalGlue());
 		
 		var tmpbox2 = Box.createHorizontalBox();
-		JLabel dststat = new JLabel("Dst None");
-		gameInfo.setDstLabel(dststat);
+		JLabel dststat = new JLabel("b");
+		gameInfo.getLabelUpdater().register("Dst", dststat);
 		tmpbox2.add(dststat);
 		tmpbox2.add(Box.createHorizontalGlue());
 		

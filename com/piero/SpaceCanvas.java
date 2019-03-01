@@ -1,6 +1,7 @@
 package com.piero;
 
 import java.awt.Canvas;
+import java.awt.Point;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
@@ -89,67 +90,59 @@ public class SpaceCanvas extends Canvas implements MouseListener {
 	}
 }
 
-class Point {
-	int x,y;
-	
-	Point(int x, int y) {
-		this.x = x;
-		this.y = y;
-	}
-	
-	boolean equals(Point p) {
-		return p.x == x && p.y == y;
-	}
-	
-	void set(Point p) {
-		this.x = p.x;
-		this.y = p.y;
-	}
-	
-	int getX() {return x;}
-	int getY() {return y;}
-}
-
 class Cursor {
-	boolean hasDst;
-	Point src, dst;
+	boolean hasSrcCursor;
+	Point srcCursorPos, dstCursorPos;
 	GameInfo gameInfo;
 	
 	Cursor(GameInfo gameInfo) {
 		this.gameInfo = gameInfo;
-		hasDst = false;
-		src = new Point(0, 0);
-		dst = new Point(0, 0);
+		hasSrcCursor = false;
+		srcCursorPos = new Point(-1, -1);
+		dstCursorPos = new Point(-1, -1);
 	}
 	
 	void drawCursor(Graphics g) {
 		g.setColor(Color.green);
-		g.drawRect(src.getX(), src.getY(), Res.tileSize, Res.tileSize);
+		g.drawRect((int)srcCursorPos.getX(), (int)srcCursorPos.getY(), Res.tileSize, Res.tileSize);
 		
-		if(hasDst) {
+		if(!hasSrcCursor) {
 			g.setColor(Color.red);
-			g.drawRect(dst.getX(), dst.getY(), Res.tileSize, Res.tileSize);
+			g.drawRect((int)dstCursorPos.getX(), (int)dstCursorPos.getY(), Res.tileSize, Res.tileSize);
 		}
 	}
 	
+	void setSrcCursor(Point loc, Planet p) {
+		srcCursorPos.setLocation(loc);
+		gameInfo.updateInfo("Src", p);
+		gameInfo.updateInfo("Dst", null);
+	}
+	
+	void setDstCursor(Point loc, Planet p) {
+		dstCursorPos.setLocation(loc);
+		gameInfo.updateInfo("Dst", p);
+	}
+	
+	Point pixelsToGridPosition(Point p) {
+		return new Point((int)p.getX() / Res.tileSize * Res.tileSize, 
+				(int)p.getY() / Res.tileSize * Res.tileSize);
+	}
+	
 	void update(Point p) {
-		var u = new Point(
-				p.getX() / Res.tileSize * Res.tileSize, 
-				p.getY() / Res.tileSize * Res.tileSize);
-		
-		var planet = gameInfo.getPlanetMan().getPlanetFromXY(u);
+		var loc = this.pixelsToGridPosition(p);
+		var planet = gameInfo.getPlanetMan().getPlanetOnXY(loc);
 		
 		if(planet != null) {
-			if(!u.equals(src)) {
-				if(!hasDst) {
-					dst.set(u);
-					hasDst = true;
-					gameInfo.setDstPlanet(planet);
-				} else {
-					hasDst = false;
-					src.set(u);
-					gameInfo.setSrcPlanet(planet);
-				}
+			if(hasSrcCursor == false) {
+				hasSrcCursor = true;
+			} else if(!loc.equals(srcCursorPos)) {
+				hasSrcCursor = loc.equals(dstCursorPos);
+			}			
+			
+			if(hasSrcCursor == true) {
+				this.setSrcCursor(loc, planet);
+			} else {
+				this.setDstCursor(loc, planet);
 			}
 		}
 	}
